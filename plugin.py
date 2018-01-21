@@ -63,7 +63,9 @@ class Segwit(callbacks.Plugin):
     threaded = True
 
     def segwit(self, irc, msg, args):
+        timeout = False
         segwit_usage = '0.0%'
+        str_out = ''
 
         headers = {}
         headers['User-Agent'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -73,15 +75,23 @@ class Segwit(callbacks.Plugin):
         # This is where segwit.party/charts data is.
         url = 'http://enyo.gk2.sk/data.json'
 
-        response = sess.get(url, headers=headers)
-        if response.status_code == 200:
-            json_data = response.content
-            segwit_usage = parse_segwit(json_data)
+        try:
+            response = sess.get(url, headers=headers, timeout=30)
+        except:
+            timeout = True
 
-            irc.reply(segwit_usage, prefixNick=False)
+        if timeout == False:
+            if response.status_code == 200:
+                json_data = response.content
+                segwit_usage = parse_segwit(json_data)
+
+                irc.reply(segwit_usage, prefixNick=False)
+            else:
+                str_out = 'Error ' + str(response.status_code)
+                irc.reply(str_out, prefixNick=False)
         else:
-            str_out = 'Error ' + str(response.status_code)
-            irc.reply(url, prefixNick=False)
+            str_out = 'Connection timed out'
+            irc.reply(str_out, prefixNick=False)
 
 Class = Segwit
 
