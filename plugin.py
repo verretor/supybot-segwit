@@ -9,18 +9,18 @@ import json
 import requests
 
 def is_json(myjson):
-  try:
-    json_object = json.loads(myjson)
-  except ValueError, e:
-    return False
-  return True
+    try:
+        json_object = json.loads(myjson)
+    except ValueError, e:
+        return False
+    return True
 
 def is_number(test_str):
-  try:
-    float(test_str)
-  except ValueError, e:
-    return False
-  return True
+    try:
+        float(test_str)
+    except ValueError, e:
+        return False
+    return True
 
 def parse_segwit(json_data):
     segwit = '0.0%'
